@@ -1,14 +1,12 @@
 import express from "express";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
-import cors from 'cors';
-
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
-app.use(cors());
-
+app.use(cors({ origin: "http://localhost:5173" }));
 
 app.get("/data/:username", (req, res) => {
   const username = req.params.username;
@@ -16,7 +14,9 @@ app.get("/data/:username", (req, res) => {
     try {
       const response = await fetch(`https://api.github.com/users/${username}`);
       const data = await response.json();
-      const response2 = await fetch(`https://api.github.com/users/${username}/repos`);
+      const response2 = await fetch(
+        `https://api.github.com/users/${username}/repos`
+      );
       const data2 = await response2.json();
       // console.log(data);
       // res.json({ msg: "ok" });
@@ -25,13 +25,14 @@ app.get("/data/:username", (req, res) => {
       const stringData = JSON.stringify(data);
       const stringDataRepos = JSON.stringify(data2);
       // console.log(stringData);
-      
 
       const prompt = `Here's the GitHub data: ${stringData} and repo data ${stringDataRepos}. Create a brutally savage roast targeting any aspect—whether it's the user's bio, repositories, or anything else. Make it harsh and biting, but don't forget to include a disclaimer at the end, clarifying that it's all in good fun and purely meant as a joke.`;
 
       const result = await model.generateContent(prompt);
+
       const roastText = result.response.text();
-      res.json({ roast: roastText }); 
+
+      res.json({ roast: roastText });
     } catch (error) {
       console.log(`error while fetching ${error}`);
     }

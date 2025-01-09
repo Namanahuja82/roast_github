@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Github } from "lucide-react";
+
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || "";
 
 const App = () => {
   const [username, setUsername] = useState("");
@@ -14,7 +16,8 @@ const App = () => {
     setRoast("");
     setError("");
     try {
-      const response = await fetch(`http://localhost:3000/data/${username}`);
+      const response = await fetch(`${BASE_URL}/data/${username}`);
+
       const data = await response.json();
       if (data.roast) {
         setRoast(data.roast);
@@ -57,7 +60,7 @@ const App = () => {
                 disabled={loading}
               />
             </div>
-            
+
             <button
               type="submit"
               disabled={loading || !username}
@@ -73,7 +76,7 @@ const App = () => {
                   Generating Roast...
                 </span>
               ) : (
-                'Generate Roast'
+                "Generate Roast"
               )}
             </button>
           </form>
@@ -94,7 +97,8 @@ const App = () => {
 
           <div className="mt-6 pt-4 border-t border-slate-100">
             <p className="text-xs text-center text-slate-400">
-              All roasts are generated in good fun and shouldn't be taken seriously! 
+              All roasts are generated in good fun and shouldn't be taken
+              seriously!
             </p>
           </div>
         </CardContent>
